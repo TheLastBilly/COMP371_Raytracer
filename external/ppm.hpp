@@ -16,6 +16,7 @@
 
 class ppm
 {
+public:
     REGISTER_EXCEPTION(file_open_error, "cannot open requested file");
 
     static void save(const std::string& file_name, const std::vector<double>& buffer, uint dimx, uint dimy)

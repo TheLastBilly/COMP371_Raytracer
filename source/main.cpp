@@ -1,29 +1,35 @@
 #include "ppm.hpp"
 #include "logger.hpp"
+#include "tests/tests.hpp"
 
 #include <iostream>
 #include <string>
+#include <exception>
 
 #include <json.hpp>
 #include <Eigen/Core>
 #include <Eigen/Dense>
 
-#if defined(COURSE_SOLUTION) || defined(STUDENT_SOLUTION)
-#include "src/RayTracer.h"
+#ifdef COURSE_SOLUTION
+#include "RayTracer.h"
+#endif
+
+#ifdef STUDENT_SOLUTION
+#include "raytracer.hpp"
 #endif
 
 REGISTER_LOGGER()
 
-int test_eigen() { return 0; }
-int test_save_ppm() { return 0; }
-int test_json(nlohmann::json& j) { return 0; }
+static void help(){
+    std::cout << "Invalid number of arguments\nUsage: ./raytracer [scene]\nRun sanity checks\n";
+}
 
 int main(int argc, char const *argv[])
 {
+    nlohmann::json j;
+
     if(argc!=2){
-        std::cout<<"Invalid number of arguments"<<std::endl;
-        std::cout<<"Usage: ./raytracer [scene] "<<std::endl;
-        std::cout<<"Run sanity checks"<<std::endl;
+        help();
         
         test_eigen();
         test_save_ppm();
@@ -42,8 +48,15 @@ int main(int argc, char const *argv[])
         std::stringstream buffer;
         buffer << t.rdbuf();
         
-        nlohmann::json j = nlohmann::json::parse(buffer.str());
-        info("Scene \"" + scene_name + "\" parsed succesfully!");
+        try 
+        {
+            j = nlohmann::json::parse(buffer.str());
+            info("Scene \"" + scene_name + "\" parsed succesfully!");
+        }
+        catch (const std::exception &e)
+        {
+            error("Cannot parse scene \"" + scene_name + "\": " + std::string(e.what()));
+        }
         
 #if defined(COURSE_SOLUTION)
         std::cout<<"Running course solution"<<std::endl;

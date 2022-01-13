@@ -34,6 +34,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
 
 file(GLOB SOURCES
     "source/*.cpp"
+    "tests/*.cpp"
 )
 
 find_package(Eigen3 REQUIRED)
@@ -48,4 +49,5 @@ add_executable(${PROJECT_NAME}
 )
 target_include_directories(${PROJECT_NAME}
     PRIVATE "${CMAKE_SOURCE_DIR}/external"
+    PRIVATE "${CMAKE_SOURCE_DIR}"
 )
